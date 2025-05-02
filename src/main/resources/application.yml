@@ -1,0 +1,44 @@
+spring:
+  ### Spring batch를 위해 추가된 내용
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+  ###
+  profiles:
+    active: dev ## 설정
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+
+logging:
+  level:
+    root: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, loggers
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+monew:
+  storage:
+    type: local
+    local:
+      root-path: ./monew/storage
+    #s3:
+    #  bucket: ${AWS_S3_BUCKET}
+    #credentials:
+    #  access-key: ${AWS_S3_ACCESS_KEY}
+    #  secret-key: ${AWS_S3_SECRET_KEY}
+    #region:
+    #  static-region: ${AWS_S3_REGION}

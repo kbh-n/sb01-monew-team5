@@ -1,0 +1,20 @@
+{
+  "name": "sb01-monew-team5",
+  "version": "1.0.0",
+  "description": "(팀 협업 문서 링크 게시)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yang-ByeongUn/sb01-monew-team5.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yang-ByeongUn/sb01-monew-team5/issues"
+  },
+  "homepage": "https://github.com/Yang-ByeongUn/sb01-monew-team5#readme"
+}
