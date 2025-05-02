@@ -208,6 +208,7 @@ public class ArticleServiceImpl implements ArticleService {
       case commentCount -> Sort.by(Sort.Direction.fromString(direction), "commentCount");
       case viewCount -> Sort.by(Sort.Direction.fromString(direction), "viewCount");
     };
+    System.out.println("sort = " + sort);
 
     int page = 0;
     if (cursor != null && !cursor.isBlank()) {
@@ -237,16 +238,22 @@ public class ArticleServiceImpl implements ArticleService {
 
     List<String> sources = (sourceIn != null && sourceIn.length > 0) ? Arrays.asList(sourceIn) : null;
 
-    String searchKeyword = (keyword == null || keyword.isBlank()) ? null : "%" + keyword + "%";
+    keyword = "인천";
+    keyword = "%"+keyword+"%";
+
 
     Page<Article> result;
     if (sources != null) {
       result = articleRepository.searchArticlesWithSources(
-          searchKeyword, interestUUID, from, to, sources, pageable
+          keyword, interestUUID, from, to, sources, pageable
       );
-    } else {
+    } else if( keyword != null ) {
+      result = articleRepository.searchArticlesWithoutAll( keyword, pageable );
+      System.out.println("result.getSize() = " + result.getSize());
+      System.out.println("result.getContent() = " + result.getContent());
+    }else {
       result = articleRepository.searchArticlesWithoutSources(
-          searchKeyword, interestUUID, from, to, pageable
+          keyword, interestUUID, from, to, pageable
       );
     }
 

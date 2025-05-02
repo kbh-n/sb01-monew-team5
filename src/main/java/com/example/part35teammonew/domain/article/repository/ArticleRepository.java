@@ -16,19 +16,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, UUID> {
+
   Article findByTitleAndDate(@NotNull String title, @NotNull LocalDateTime date);
+
   Optional<Article> findById(@NotNull UUID id);
 
 
   @Query("""
-  SELECT a FROM Article a
-  WHERE a.deletedAt IS NULL
-    AND (:keyword IS NULL OR a.title LIKE :keyword)
-    AND (:interestId IS NULL OR a.interestId = :interestId)
-    AND (:from IS NULL OR a.date >= :from)
-    AND (:to IS NULL OR a.date <= :to)
-    AND (:sources IS NULL OR a.source IN :sources)
-  """)
+      SELECT a FROM Article a
+      WHERE a.deletedAt IS NULL
+        AND (:keyword IS NULL OR a.title LIKE :keyword)
+        AND (:interestId IS NULL OR a.interestId = :interestId)
+        AND (:from IS NULL OR a.date >= :from)
+        AND (:to IS NULL OR a.date <= :to)
+        AND (:sources IS NULL OR a.source IN :sources)
+      """)
   Page<Article> searchArticlesWithSources(
       @Param("keyword") String keyword,
       @Param("interestId") UUID interestId,
@@ -39,13 +41,13 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
   );
 
   @Query("""
-  SELECT a FROM Article a
-  WHERE a.deletedAt IS NULL
-    AND (:keyword IS NULL OR a.title LIKE :keyword)
-    AND (:interestId IS NULL OR a.interestId = :interestId)
-    AND (:from IS NULL OR a.date >= :from)
-    AND (:to IS NULL OR a.date <= :to)
-  """)
+      SELECT a FROM Article a
+      WHERE a.deletedAt IS NULL
+        AND (:keyword IS NULL OR a.title LIKE :keyword)
+        AND (:interestId IS NULL OR a.interestId = :interestId)
+        AND (:from IS NULL OR a.date >= :from)
+        AND (:to IS NULL OR a.date <= :to)
+      """)
   Page<Article> searchArticlesWithoutSources(
       @Param("keyword") String keyword,
       @Param("interestId") UUID interestId,
@@ -53,6 +55,13 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
       @Param("to") LocalDateTime to,
       Pageable pageable
   );
+
+  @Query("""
+        SELECT a FROM Article a
+        WHERE a.deletedAt IS NULL
+          AND a.title LIKE :keyword
+      """)
+  Page<Article> searchArticlesWithoutAll(@Param("keyword") String keyword, Pageable pageable);
 
 
 }
