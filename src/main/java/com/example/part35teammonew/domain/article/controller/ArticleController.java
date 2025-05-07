@@ -20,6 +20,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -98,6 +99,11 @@ public class ArticleController {
       @RequestParam int limit,
       @RequestHeader("Monew-Request-User-ID") String userId
   ) {
+    if ( limit == 0 ){
+      //페이지 맨 아래로 내려가고 휠을 움직이면 에러 발생
+      //프런트 문제일수도?
+      return ResponseEntity.badRequest().body(null);
+    }
     //같은게 있으면 제목순
     ArticlesResponse result = articleService.getPageArticle(keyword, interestId,
         sourceIn, publishDateFrom, publishDateTo, orderBy, direction, cursor, after, limit, userId);

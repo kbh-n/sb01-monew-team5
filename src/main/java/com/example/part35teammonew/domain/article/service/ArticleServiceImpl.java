@@ -192,8 +192,8 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public void increaseCountReadUser(UUID id){
-    Article article=articleRepository.findById(id).
+  public void increaseCountReadUser(UUID id) {
+    Article article = articleRepository.findById(id).
         orElseThrow(() -> new NoSuchElementException("기사 없음"));
     article.increaseReadCount();
   }
@@ -208,7 +208,6 @@ public class ArticleServiceImpl implements ArticleService {
       case commentCount -> Sort.by(Sort.Direction.fromString(direction), "commentCount");
       case viewCount -> Sort.by(Sort.Direction.fromString(direction), "viewCount");
     };
-    System.out.println("sort = " + sort);
 
     int page = 0;
     if (cursor != null && !cursor.isBlank()) {
@@ -229,32 +228,32 @@ public class ArticleServiceImpl implements ArticleService {
     LocalDateTime from = null;
     if (publishDateFrom != null && !publishDateFrom.isBlank()) {
       from = LocalDateTime.parse(publishDateFrom);
+      System.out.println("from = " + from);
+    } else {
+      from = LocalDate.now().atStartOfDay();
     }
 
     LocalDateTime to = null;
     if (publishDateTo != null && !publishDateTo.isBlank()) {
       to = LocalDateTime.parse(publishDateTo);
+      System.out.println("to = " + to);
+    } else {
+      to = LocalDate.now().plusDays(1).atStartOfDay();
     }
 
-    List<String> sources = (sourceIn != null && sourceIn.length > 0) ? Arrays.asList(sourceIn) : null;
-
-    keyword = "인천";
-    keyword = "%"+keyword+"%";
-
+    List<String> sources =
+        (sourceIn != null && sourceIn.length > 0) ? Arrays.asList(sourceIn) : null;
 
     Page<Article> result;
     if (sources != null) {
       result = articleRepository.searchArticlesWithSources(
           keyword, interestUUID, from, to, sources, pageable
       );
-    } else if( keyword != null ) {
-      result = articleRepository.searchArticlesWithoutAll( keyword, pageable );
-      System.out.println("result.getSize() = " + result.getSize());
-      System.out.println("result.getContent() = " + result.getContent());
-    }else {
-      result = articleRepository.searchArticlesWithoutSources(
-          keyword, interestUUID, from, to, pageable
-      );
+    } else if (keyword != null) {
+      keyword = "%" + keyword + "%";
+      result = articleRepository.searchArticlesWithoutAll(keyword, from, to, pageable);
+    } else {
+      result = articleRepository.searchArticlesWithDate(from, to, pageable);
     }
 
     List<ArticleBaseDto> content = result.getContent().stream()
@@ -268,7 +267,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     ArticlesResponse response = new ArticlesResponse();
     response.setContent(content);
-    response.setSize(content.size());
+    response.setSize(limit);
     response.setTotalElements((int) result.getTotalElements());
     response.setHasNext(String.valueOf(result.hasNext()));
     response.setNextCursor(String.valueOf(page + 1));

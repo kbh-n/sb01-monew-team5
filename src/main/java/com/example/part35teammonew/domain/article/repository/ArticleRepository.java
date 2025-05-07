@@ -60,8 +60,20 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
         SELECT a FROM Article a
         WHERE a.deletedAt IS NULL
           AND a.title LIKE :keyword
+          AND a.date >= :from
+          AND a.date <= :to
       """)
-  Page<Article> searchArticlesWithoutAll(@Param("keyword") String keyword, Pageable pageable);
+  Page<Article> searchArticlesWithoutAll(
+      @Param("keyword") String keyword,
+      @Param("from") LocalDateTime from,
+      @Param("to") LocalDateTime to,
+      Pageable pageable);
 
-
+  @Query("""
+        SELECT a FROM Article a
+        WHERE a.deletedAt IS NULL
+          AND a.date >= :from
+          AND a.date <= :to
+      """)
+  Page<Article> searchArticlesWithDate(LocalDateTime from, LocalDateTime to, Pageable pageable);
 }
